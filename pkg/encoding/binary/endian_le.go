@@ -2,7 +2,7 @@
 // Internal use only. Unauthorized use is prohibited.
 // Contact: legal@focela.com
 
-// Package binary provides useful API for handling binary/bytes data.
+// Package binary provides APIs for handling binary/bytes data.
 package binary
 
 import (
