@@ -64,7 +64,7 @@ func LeEncode(values ...interface{}) []byte {
 	return buf.Bytes()
 }
 
-// LeEncodeByLength encodes values into bytes and adjusts the length.
+// LeEncodeByLength encodes values to bytes and ensures the result matches the specified length.
 func LeEncodeByLength(length int, values ...interface{}) []byte {
 	b := LeEncode(values...)
 	if len(b) < length {
@@ -75,12 +75,12 @@ func LeEncodeByLength(length int, values ...interface{}) []byte {
 	return b
 }
 
-// LeEncodeString encodes a string into bytes.
+// LeEncodeString converts a string into a byte slice.
 func LeEncodeString(s string) []byte {
 	return []byte(s)
 }
 
-// LeEncodeBool encodes a boolean into a byte.
+// LeEncodeBool converts a boolean value into a byte.
 func LeEncodeBool(b bool) []byte {
 	if b {
 		return []byte{1}
@@ -88,6 +88,7 @@ func LeEncodeBool(b bool) []byte {
 	return []byte{0}
 }
 
+// LeEncodeInt encodes an integer into a byte slice using LittleEndian.
 func LeEncodeInt(i int) []byte {
 	if i <= math.MaxInt8 {
 		return LeEncodeInt8(int8(i))
@@ -99,6 +100,7 @@ func LeEncodeInt(i int) []byte {
 	return LeEncodeInt64(int64(i))
 }
 
+// LeEncodeUint encodes an unsigned integer into a byte slice using LittleEndian.
 func LeEncodeUint(i uint) []byte {
 	if i <= math.MaxUint8 {
 		return LeEncodeUint8(uint8(i))
@@ -110,62 +112,69 @@ func LeEncodeUint(i uint) []byte {
 	return LeEncodeUint64(uint64(i))
 }
 
-func LeEncodeInt8(i int8) []byte {
-	return []byte{byte(i)}
-}
+// LeEncodeInt8 encodes an int8 value into a single byte.
+func LeEncodeInt8(i int8) []byte { return []byte{byte(i)} }
 
-func LeEncodeUint8(i uint8) []byte {
-	return []byte{i}
-}
+// LeEncodeUint8 encodes a uint8 value into a single byte.
+func LeEncodeUint8(i uint8) []byte { return []byte{i} }
 
+// LeEncodeInt16 encodes an int16 value into a 2-byte slice.
 func LeEncodeInt16(i int16) []byte {
 	b := make([]byte, 2)
 	binary.LittleEndian.PutUint16(b, uint16(i))
 	return b
 }
 
+// LeEncodeUint16 encodes a uint16 value into a 2-byte slice.
 func LeEncodeUint16(i uint16) []byte {
 	b := make([]byte, 2)
 	binary.LittleEndian.PutUint16(b, i)
 	return b
 }
 
+// LeEncodeInt32 encodes an int32 value into a 4-byte slice.
 func LeEncodeInt32(i int32) []byte {
 	b := make([]byte, 4)
 	binary.LittleEndian.PutUint32(b, uint32(i))
 	return b
 }
 
+// LeEncodeUint32 encodes a uint32 value into a 4-byte slice.
 func LeEncodeUint32(i uint32) []byte {
 	b := make([]byte, 4)
 	binary.LittleEndian.PutUint32(b, i)
 	return b
 }
 
+// LeEncodeInt64 encodes an int64 value into an 8-byte slice.
 func LeEncodeInt64(i int64) []byte {
 	b := make([]byte, 8)
 	binary.LittleEndian.PutUint64(b, uint64(i))
 	return b
 }
 
+// LeEncodeUint64 encodes a uint64 value into an 8-byte slice.
 func LeEncodeUint64(i uint64) []byte {
 	b := make([]byte, 8)
 	binary.LittleEndian.PutUint64(b, i)
 	return b
 }
 
+// LeEncodeFloat32 encodes a float32 value into a 4-byte slice.
 func LeEncodeFloat32(f float32) []byte {
 	b := make([]byte, 4)
 	binary.LittleEndian.PutUint32(b, math.Float32bits(f))
 	return b
 }
 
+// LeEncodeFloat64 encodes a float64 value into an 8-byte slice.
 func LeEncodeFloat64(f float64) []byte {
 	b := make([]byte, 8)
 	binary.LittleEndian.PutUint64(b, math.Float64bits(f))
 	return b
 }
 
+// LeDecode decodes bytes into specified values using LittleEndian.
 func LeDecode(b []byte, values ...interface{}) error {
 	buf := bytes.NewBuffer(b)
 	for _, value := range values {
@@ -176,26 +185,28 @@ func LeDecode(b []byte, values ...interface{}) error {
 	return nil
 }
 
+// LeDecodeToBool decodes a byte slice into a boolean value.
 func LeDecodeToBool(b []byte) bool {
 	return len(b) > 0 && b[0] != 0
 }
 
-func LeDecodeToInt8(b []byte) int8 {
-	return int8(b[0])
-}
+// LeDecodeToInt8 decodes a byte slice into an int8 value.
+func LeDecodeToInt8(b []byte) int8 { return int8(b[0]) }
 
-func LeDecodeToUint8(b []byte) uint8 {
-	return b[0]
-}
+// LeDecodeToUint8 decodes a byte slice into a uint8 value.
+func LeDecodeToUint8(b []byte) uint8 { return b[0] }
 
+// LeDecodeToInt16 decodes a byte slice into an int16 value.
 func LeDecodeToInt16(b []byte) int16 {
 	return int16(binary.LittleEndian.Uint16(LeFillUpSize(b, 2)))
 }
 
+// LeDecodeToUint16 decodes a byte slice into a uint16 value.
 func LeDecodeToUint16(b []byte) uint16 {
 	return binary.LittleEndian.Uint16(LeFillUpSize(b, 2))
 }
 
+// LeFillUpSize ensures a byte slice has the required length by padding zeros.
 func LeFillUpSize(b []byte, l int) []byte {
 	if len(b) >= l {
 		return b[:l]
