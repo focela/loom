@@ -3,8 +3,6 @@
 // Contact: legal@focela.com
 
 // Package binary provides useful API for handling binary/bytes data.
-//
-// Note that package binary encodes the data using LittleEndian in default
 package binary
 
 import (
